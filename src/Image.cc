@@ -273,7 +273,7 @@ napi_value Image::New(napi_env env, napi_callback_info info) { // {{{
         napi_value jsthis;
 
         status = napi_get_cb_info(env, info, &argc, args, &jsthis, nullptr);
-        // assert(status == napi_ok);
+        assert(status == napi_ok);
 
         uint32_t width, height;
         width = height = 0;

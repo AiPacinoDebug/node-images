@@ -66,7 +66,7 @@ void read_from_memory(png_structp png_ptr, png_bytep buffer, png_size_t size){ /
 } // }}}
 
 #define PNG_INIT_FILE_SIZE 1024
-#define PNG_BIG_FILE_SIZE 10240
+#define PNG_BIG_FILE_SIZE 1024000
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
@@ -116,12 +116,9 @@ DECODER_FN(Png){ // {{{
 
     if(input->length < PNG_BYTES_TO_CHECK) return FAIL;
     if(png_sig_cmp(input->data, 0, PNG_BYTES_TO_CHECK)) return FAIL;
-    if((png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) {
-        return FAIL;
-    }
-    info_ptr = png_create_info_struct(png_ptr);
-    png_set_chunk_malloc_max(png_ptr,0);
-    if(info_ptr == NULL){
+    if((png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) return FAIL;
+
+    if((info_ptr = png_create_info_struct(png_ptr)) == NULL){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
         return FAIL;
     }
@@ -189,9 +186,7 @@ ENCODER_FN(Png){ // {{{
     png_infop info_ptr;
 
     if((png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) return FAIL;
-    info_ptr = png_create_info_struct(png_ptr);
-    png_set_chunk_malloc_max(png_ptr,0);
-    if(info_ptr == NULL){
+    if((info_ptr = png_create_info_struct(png_ptr)) == NULL){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
         return FAIL;
     }
