@@ -116,7 +116,11 @@ DECODER_FN(Png){ // {{{
 
     if(input->length < PNG_BYTES_TO_CHECK) return FAIL;
     if(png_sig_cmp(input->data, 0, PNG_BYTES_TO_CHECK)) return FAIL;
-    if((png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) return FAIL;
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_set_chunk_malloc_max(png_ptr, 0)
+    if(png_ptr == NULL) {
+        return FAIL;
+    }
 
     if((info_ptr = png_create_info_struct(png_ptr)) == NULL){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
