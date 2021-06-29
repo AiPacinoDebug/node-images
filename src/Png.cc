@@ -116,13 +116,12 @@ DECODER_FN(Png){ // {{{
 
     if(input->length < PNG_BYTES_TO_CHECK) return FAIL;
     if(png_sig_cmp(input->data, 0, PNG_BYTES_TO_CHECK)) return FAIL;
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    png_set_chunk_malloc_max(png_ptr, 0)
-    if(png_ptr == NULL) {
+    if((png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) {
         return FAIL;
     }
-
-    if((info_ptr = png_create_info_struct(png_ptr)) == NULL){
+    info_ptr = png_create_info_struct(png_ptr);
+    png_set_chunk_malloc_max(png_ptr,0);
+    if(info_ptr == NULL){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
         return FAIL;
     }
@@ -190,7 +189,9 @@ ENCODER_FN(Png){ // {{{
     png_infop info_ptr;
 
     if((png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)) == NULL) return FAIL;
-    if((info_ptr = png_create_info_struct(png_ptr)) == NULL){
+    info_ptr = png_create_info_struct(png_ptr);
+    png_set_chunk_malloc_max(png_ptr,0);
+    if(info_ptr == NULL){
         png_destroy_read_struct(&png_ptr, NULL, NULL);
         return FAIL;
     }
